@@ -1,29 +1,32 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "jjdynmapclient",
   "version": "${version}",
 
-  "name": "LavaJumper Module Template",
-  "description": "Mod template for JavaJumper's mods",
+  "name": "JJDynmapClient",
+  "description": "Dynmap based minimap mod",
   "authors": [
     "JavaJumper"
   ],
   "contact": {
     "homepage": "https://javajump3r.github.io/",
-    "sources": "https://github.com/JavaJump3r/"
+    "sources": "https://github.com/JavaJump3r/JJDynmapClient"
   },
 
   "license": "GPL v3",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/jjdynmapclient/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.javajump3r.modid.ModInit"
+      "io.github.javajump3r.jjdynmap.DynmapInit"
+    ],
+    "modmenu": [
+      "io.github.javajump3r.ModMenuIntegration"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "ljdynmapclient.json"
   ],
 
   "depends": {
