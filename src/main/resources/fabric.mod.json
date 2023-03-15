@@ -35,5 +35,12 @@
     "minecraft": "~1.19.3",
     "java": ">=17",
     "lavajumper-core" :"*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/44sD49Aan3"
+      }
+    }
   }
 }
