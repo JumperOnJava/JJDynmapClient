@@ -1,5 +1,6 @@
-package io.github.javajump3r.jjdynmap.dynmap;
+package io.github.JumperOnJava.jjdynmap.dynmap;
 
+import io.github.JumperOnJava.autocfg.Configurable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -70,11 +71,12 @@ public class DynMapHelper {
     }
     public static boolean isPointInside(int x1, int y1, int x2,int y2, int x, int y)
     {
-        if (x > x1 && x < x2 && y > y1 && y < y2)
+        if(x > x1 && x < x2 && y > y1 && y < y2)
             return true;
         return false;
     }
-    private static Map colors = new HashMap<String,Integer>();
+
+    public static HashMap<String,Integer> colors = new HashMap<>();
 
     static {
         colors.put("midseason_world", ColorHelper.Argb.getArgb(255,115, 207, 50));
@@ -108,6 +110,7 @@ public class DynMapHelper {
             world = "world_nether";
         if(world.equals("minecraft:the_end"))
             world = "world_the_end";
+        world = world.replace(":","-");
         return world;
     }
 

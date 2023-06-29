@@ -1,16 +1,17 @@
-package io.github.javajump3r.jjdynmap.dynmap;
+package io.github.JumperOnJava.jjdynmap.dynmap;
 
 import com.google.gson.Gson;
-import io.github.javajump3r.autocfg.Configurable;
-import io.github.javajump3r.autocfg.CustomCategory;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.DynmapPlayerWaypoint;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.Waypoint;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.WaypointStorage;
-import io.github.javajumper.lavajumper.LavaJumper;
-import io.github.javajumper.lavajumper.common.ToggleableFeature;
-import io.github.javajumper.lavajumper.common.actiontext.ActionTextRenderer;
+import io.github.JumperOnJava.autocfg.Configurable;
+import io.github.JumperOnJava.autocfg.CustomCategory;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.DynmapPlayerWaypoint;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.Waypoint;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.WaypointStorage;
+import io.github.JumperOnJava.lavajumper.LavaJumper;
+import io.github.JumperOnJava.lavajumper.common.ToggleableFeature;
+import io.github.JumperOnJava.lavajumper.common.actiontext.ActionTextRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
@@ -19,7 +20,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static io.github.javajump3r.jjdynmap.dynmap.DynMapRenderer.DYNMAP_CATEGORY;
+import static io.github.JumperOnJava.jjdynmap.dynmap.DynMapRenderer.DYNMAP_CATEGORY;
 
 public class DynmapPlayers extends ToggleableFeature {
     @Configurable(defaultValue = "false")
@@ -28,7 +29,7 @@ public class DynmapPlayers extends ToggleableFeature {
     public static DynMapUpdates lastMapUpdate;
     @Configurable(defaultValue = "")
     @CustomCategory(category = DYNMAP_CATEGORY)
-    public static String playerDataLink = "https://map.chillcraft.online/up/world/midseason_world/1";
+    public static String playerDataLink = "https://map.chillcraft.online/up/world/world/1";
     private static DynmapPlayers instance;
 
     public DynmapPlayers()
@@ -56,10 +57,10 @@ public class DynmapPlayers extends ToggleableFeature {
             }
         }
     }
-    public static void renderInstance(MatrixStack matrixStack,float delta)
+    public static void renderInstance(DrawContext context, float delta)
     {
         if(instance!=null)
-        instance.render(matrixStack,delta);
+        instance.render(context,delta);
     }
     public void updatePlayers() {
         if (MinecraftClient.getInstance().player == null)
@@ -74,7 +75,7 @@ public class DynmapPlayers extends ToggleableFeature {
         }
         WaypointStorage.getMainInstance().setPlayers(waypoints);
     }
-    public void render(MatrixStack matrixStack,float tickDelta)
+    public void render(DrawContext context,float tickDelta)
     {
         if(!enabled)
             return;
@@ -88,7 +89,7 @@ public class DynmapPlayers extends ToggleableFeature {
                 i++;
                 if(waypoint.showInPlayerList())
                 ActionTextRenderer.renderUpperRight(
-                        matrixStack,
+                        context,
                         i,
                         String.format("%s %s at coords %d %d %d",waypoint.getListName(),waypoint.getName(),waypoint.getRawX(),waypoint.getRawY(),waypoint.getRawZ()),
                         waypoint.getColor());

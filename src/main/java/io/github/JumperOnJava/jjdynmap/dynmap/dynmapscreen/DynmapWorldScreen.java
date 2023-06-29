@@ -1,13 +1,12 @@
-package io.github.javajump3r.jjdynmap.dynmap.dynmapscreen;
+package io.github.JumperOnJava.jjdynmap.dynmap.dynmapscreen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.javajump3r.jjdynmap.dynmap.DynMapHelper;
-import io.github.javajump3r.jjdynmap.dynmap.DynMapRenderer;
-import io.github.javajump3r.jjdynmap.dynmap.TextureRequest;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.Waypoint;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.WaypointStorage;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynMapHelper;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynMapRenderer;
+import io.github.JumperOnJava.jjdynmap.dynmap.TextureRequest;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.Waypoint;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.WaypointStorage;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
@@ -29,8 +28,10 @@ public class DynmapWorldScreen extends Screen {
         mapCenter = new Vec2f((float) client.player.getX(),(float) client.player.getZ()+32);
 
     }
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta){
-        renderBackground(matrixStack);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta){
+        renderBackground(context);
+        var matrixStack = context.getMatrices();
+
         var mathStack = new VectorMathStack();
 
         matrixStack.push();
@@ -57,6 +58,7 @@ public class DynmapWorldScreen extends Screen {
 
         matrixStack.translate(-mapCenter.x, -mapCenter.y, 0);
         mathStack.translate(-mapCenter.x, -mapCenter.y);
+
         int[] sizes={5,currentZoomLevel};
         var worldSpaceOperations = mathStack.getCurrentOperations();
 
@@ -66,7 +68,7 @@ public class DynmapWorldScreen extends Screen {
             for (int i = -distance-5; i <= distance+4; i++) {
                 for (int j = -distance; j <= distance; j++) {
                     var player = client.player;
-                    var request = TextureRequest.WorldSpaceTextureRequest(
+                    var request = TextureRequest.worldSpaceTextureRequest(
                             DynMapRenderer.mapLink,
                             DynMapHelper.getCurrentWorld(),
                             sizes[s],
@@ -76,8 +78,7 @@ public class DynmapWorldScreen extends Screen {
                             j);
                     if(request.getTexture()==TextureRequest.ERROR_TEXTURE)
                         continue;
-                    RenderSystem.setShaderTexture(0, request.getTexture());
-                    drawTexture(matrixStack,
+                    context.drawTexture(request.getTexture(),
                             (request.worldX),
                             (request.worldY),
                             0, 0,
@@ -95,11 +96,11 @@ public class DynmapWorldScreen extends Screen {
         int r = 4;
         int col;
         col = ColorHelper.Argb.getArgb(255,128,128,128);
-        fill(matrixStack,r,r,-r,r-1,col);
-        fill(matrixStack,r,r,r-1,-r,col);
+        context.fill(r,r,-r,r-1,col);
+        context.fill(r,r,r-1,-r,col);
         col = ColorHelper.Argb.getArgb(255,196,196,196);
-        fill(matrixStack,-r,-r,r,-r+1,col);
-        fill(matrixStack,-r,-r,-r+1,r,col);
+        context.fill(-r,-r,r,-r+1,col);
+        context.fill(-r,-r,-r+1,r,col);
 
 
         matrixStack.pop();
@@ -113,7 +114,7 @@ public class DynmapWorldScreen extends Screen {
             var waypointPos2d = waypoint.getPosInDimension(currentWorld);
             var waypointPos= new Vec3d(-waypointPos2d.x, -waypointPos2d.y-32, 0);
             waypointPos = VectorMathStack.undo(waypointPos,worldSpaceOperations);
-            waypoint.RenderWaypointOnScreen(matrixStack,-waypointPos.x,-waypointPos.y);
+            waypoint.RenderWaypointOnScreen(context,-waypointPos.x,-waypointPos.y);
         }
         var pos = VectorMathStack.applyForward(new Vec3d(-width/2,-height/2,0),worldSpaceOperations).negate();
         //var coordsText = DynMapHelper.vecToString(new Vec2f((float)pos.x,(float)pos.y));
@@ -122,10 +123,10 @@ public class DynmapWorldScreen extends Screen {
         var textZ = "Z: "+ (int) pos.y;
         var widthX = textRenderer.getWidth(textX);
         var widthZ = textRenderer.getWidth(textZ);
-        fill(matrixStack,0,0,widthX+2,10,ColorHelper.Argb.getArgb(128,0,0,0));
-        fill(matrixStack,0,10,widthZ+2,20,ColorHelper.Argb.getArgb(128,0,0,0));
-        client.textRenderer.draw(matrixStack, textX,1,2,ColorHelper.Argb.getArgb(255,255,255,255));
-        client.textRenderer.draw(matrixStack, textZ,1,12,ColorHelper.Argb.getArgb(255,255,255,255));
+        context.fill(0,0,widthX+2,10,ColorHelper.Argb.getArgb(128,0,0,0));
+        context.fill(0,10,widthZ+2,20,ColorHelper.Argb.getArgb(128,0,0,0));
+        context.drawText(client.textRenderer,textX,1,2,ColorHelper.Argb.getArgb(255,255,255,255),true);
+        context.drawText(client.textRenderer,textZ,1,12,ColorHelper.Argb.getArgb(255,255,255,255),true);
     }
 
     @Override

@@ -9,8 +9,8 @@
     "JavaJumper"
   ],
   "contact": {
-    "homepage": "https://javajump3r.github.io/",
-    "sources": "https://github.com/JavaJump3r/JJDynmapClient"
+    "homepage": "https://JumperOnJava.github.io/",
+    "sources": "https://github.com/JumperOnJava/JJDynmapClient"
   },
 
   "license": "GPL v3",
@@ -19,10 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "io.github.javajump3r.jjdynmap.DynmapInit"
+      "io.github.JumperOnJava.jjdynmap.DynmapInit"
     ],
     "modmenu": [
-      "io.github.javajump3r.ModMenuIntegration"
+      "io.github.JumperOnJava.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -32,9 +32,10 @@
   "depends": {
     "fabricloader": ">=0.14.14",
     "fabric-api": "*",
-    "minecraft": "~1.19.3",
+    "minecraft": ["1.20","1.20.1"],
     "java": ">=17",
-    "lavajumper-core" :"*"
+    "yet_another_config_lib_v3": ">=3.0.1+1.20",
+    "lavajumper-core" :"1.2.3.8"
   },
   "custom": {
     "modmenu": {

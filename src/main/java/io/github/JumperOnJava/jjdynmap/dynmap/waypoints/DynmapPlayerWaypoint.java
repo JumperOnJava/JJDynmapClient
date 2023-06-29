@@ -1,7 +1,7 @@
-package io.github.javajump3r.jjdynmap.dynmap.waypoints;
+package io.github.JumperOnJava.jjdynmap.dynmap.waypoints;
 
-import io.github.javajump3r.jjdynmap.dynmap.DynMapHelper;
-import io.github.javajump3r.jjdynmap.dynmap.DynmapPlayers;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynMapHelper;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynmapPlayers;
 import net.minecraft.util.Identifier;
 
 public class DynmapPlayerWaypoint implements Waypoint {

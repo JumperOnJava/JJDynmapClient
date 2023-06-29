@@ -1,9 +1,8 @@
-package io.github.javajump3r.jjdynmap.dynmap.waypoints;
+package io.github.JumperOnJava.jjdynmap.dynmap.waypoints;
 
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.util.Identifier;
@@ -24,24 +23,24 @@ public interface Waypoint {
     String getListName();
     boolean showInPlayerList();
 
-    default void RenderWaypointOnScreen(MatrixStack matrixStack, double centerX, double centerY)
+    default void RenderWaypointOnScreen(DrawContext context, double centerX, double centerY)
     {
         var profiler = MinecraftClient.getInstance().getProfiler();
         profiler.push("point");
         int size = 2;
-        DrawableHelper.fill(matrixStack,
+        context.fill(
                 (int)(centerX-(size+2)),
                 (int)(centerY-(size+2)),
                 (int)(centerX+(size+2)),
                 (int)(centerY+(size+2)),
                 ColorHelper.Argb.getArgb(255,0,0,0));
-        DrawableHelper.fill(matrixStack,
+        context.fill(
                 (int)(centerX-(size+1)),
                 (int)(centerY-(size+1)),
                 (int)(centerX+(size+1)),
                 (int)(centerY+(size+1)),
                 ColorHelper.Argb.getArgb(255,255,255,255));
-        DrawableHelper.fill(matrixStack,
+        context.fill(
                 (int)(centerX-size),
                 (int)(centerY-size),
                 (int)(centerX+size),
@@ -50,8 +49,7 @@ public interface Waypoint {
         profiler.pop();
         profiler.push("text");
         var enterY=size*2+1;
-        DrawableHelper.drawCenteredTextWithShadow(
-                matrixStack,
+        context.drawCenteredTextWithShadow(
                 MinecraftClient.getInstance().textRenderer,
                 OrderedText.styledForwardsVisitedString(this.getName(), Style.EMPTY),
                 (int) centerX,

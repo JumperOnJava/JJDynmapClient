@@ -1,4 +1,4 @@
-package io.github.javajump3r.jjdynmap.dynmap.waypoints;
+package io.github.JumperOnJava.jjdynmap.dynmap.waypoints;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;

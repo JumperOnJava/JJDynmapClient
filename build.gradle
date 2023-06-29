@@ -22,8 +22,7 @@ repositories {
 }
 
 dependencies {
-	modImplementation "com.github.JavaJump3r:JJAutoConfig:${jjautoconfig_version}"
-	modImplementation "com.github.JavaJump3r:LavaJumperCore:${ljc_version}"
+	modImplementation "com.github.JumperOnJava:LavaJumperCore:${ljc_version}"
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"

@@ -1,13 +1,13 @@
-package io.github.javajump3r.jjdynmap.dynmap.waypoints;
+package io.github.JumperOnJava.jjdynmap.dynmap.waypoints;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.javajump3r.jjdynmap.dynmap.DynMapHelper;
-import io.github.javajumper.lavajumper.common.FileReadWrite;
-import io.github.javajumper.lavajumper.common.actiontext.ActionTextRenderer;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynMapHelper;
+import io.github.JumperOnJava.lavajumper.common.FileReadWrite;
+import io.github.JumperOnJava.lavajumper.common.actiontext.ActionTextRenderer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;

@@ -1,4 +1,4 @@
-package io.github.javajump3r.jjdynmap.dynmap.dynmapscreen;
+package io.github.JumperOnJava.jjdynmap.dynmap.dynmapscreen;
 
 import java.util.function.Function;
 

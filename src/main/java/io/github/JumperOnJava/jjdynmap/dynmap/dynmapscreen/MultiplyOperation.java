@@ -1,4 +1,4 @@
-package io.github.javajump3r.jjdynmap.dynmap.dynmapscreen;
+package io.github.JumperOnJava.jjdynmap.dynmap.dynmapscreen;
 
 import net.minecraft.util.math.Vec3d;
 

@@ -1,10 +1,10 @@
-package io.github.javajump3r.jjdynmap.dynmap;
+package io.github.JumperOnJava.jjdynmap.dynmap;
 
-import io.github.javajump3r.autocfg.Configurable;
-import io.github.javajump3r.autocfg.CustomCategory;
-import io.github.javajumper.lavajumper.LavaJumper;
-import io.github.javajumper.lavajumper.common.Feature;
-import io.github.javajumper.lavajumper.common.LimitedHashMap;
+import io.github.JumperOnJava.autocfg.Configurable;
+import io.github.JumperOnJava.autocfg.CustomCategory;
+import io.github.JumperOnJava.lavajumper.LavaJumper;
+import io.github.JumperOnJava.lavajumper.common.Feature;
+import io.github.JumperOnJava.lavajumper.common.LimitedHashMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -18,16 +18,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.github.javajump3r.jjdynmap.dynmap.DynMapRenderer.DYNMAP_CATEGORY;
-
 public class TextureRequest extends Feature {
     public static Identifier ERROR_TEXTURE = new Identifier("jjhud","textures/gui/dynmap/errortexture.png");
 
     @Configurable(defaultValue = "Random")
-    @CustomCategory(category = DYNMAP_CATEGORY)
+    @CustomCategory(category = DynMapRenderer.DYNMAP_CATEGORY)
     public static String prefix="Random";
     @Configurable(defaultValue = "5")
-    @CustomCategory(category = DYNMAP_CATEGORY)
+    @CustomCategory(category = DynMapRenderer.DYNMAP_CATEGORY)
     public static int maxDownloadAttepts = 5;
 
     public static int currentDownloads = 0;
@@ -42,7 +40,7 @@ public class TextureRequest extends Feature {
     public final int worldY;
     public static Map<Pair<Integer,Integer>,TextureRequest> cacheMap = new LimitedHashMap<>(256);
     @Configurable(defaultValue = "4")
-    @CustomCategory(category = DYNMAP_CATEGORY)
+    @CustomCategory(category = DynMapRenderer.DYNMAP_CATEGORY)
     public static int maxParralelDownloads=1;
 
 
@@ -63,7 +61,7 @@ public class TextureRequest extends Feature {
         this.formatString = formatString;
     }
 
-    public static TextureRequest WorldSpaceTextureRequest(String ip, Identifier world, int zoom, int x, int y, int xOffset, int yOffset) {
+    public static TextureRequest worldSpaceTextureRequest(String ip, Identifier world, int zoom, int x, int y, int xOffset, int yOffset) {
 
         var blocksPerLevel = DynMapHelper.getBlocksPerZoomLevel(zoom);
         x /= blocksPerLevel;
@@ -86,7 +84,8 @@ public class TextureRequest extends Feature {
     }
 
     private Path getFile() {
-        var directory = FabricLoader.getInstance().getGameDir().resolve(String.format(".jjDynmapCacher/temp/%s/%s/%s/",prefix.equals("Random")?DynMapHelper.sessionRandom():prefix, ip, world));
+        var worldname = String.format(".jjDynmapCacher/temp/%s/%s/%s/",prefix.equals("Random")?DynMapHelper.sessionRandom():prefix, ip, world);
+        var directory = FabricLoader.getInstance().getGameDir().resolve(worldname);
         directory.toFile().mkdirs();
         var path = directory+String.format("/zoom%d_%d_%d.jpg", zoom, x, y);
         return directory.resolve(path);

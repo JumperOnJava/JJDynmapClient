@@ -1,16 +1,15 @@
-package io.github.javajump3r.jjdynmap.dynmap;
+package io.github.JumperOnJava.jjdynmap.dynmap;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.javajump3r.autocfg.Configurable;
-import io.github.javajump3r.autocfg.CustomCategory;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.Waypoint;
-import io.github.javajump3r.jjdynmap.dynmap.waypoints.WaypointStorage;
-import io.github.javajumper.lavajumper.common.ToggleableFeature;
+import io.github.JumperOnJava.autocfg.Configurable;
+import io.github.JumperOnJava.autocfg.CustomCategory;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.Waypoint;
+import io.github.JumperOnJava.jjdynmap.dynmap.waypoints.WaypointStorage;
+import io.github.JumperOnJava.lavajumper.common.ToggleableFeature;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec2f;
@@ -39,8 +38,6 @@ public class DynMapRenderer extends ToggleableFeature {
     @Configurable(defaultValue = "5",minValue = 0,maxValue = 5)
     @CustomCategory(category = DYNMAP_CATEGORY)
     public static int zoom = 5;
-    @Configurable(defaultValue = "0.5",minValue = 0.125,maxValue = 4,interval = 0.125)
-    @CustomCategory(category = DYNMAP_CATEGORY)
     public static double cellsizeConst=0.5;
 
     @Configurable(defaultValue = "2",minValue = 1d/8,maxValue = 8,interval = 1d/8)
@@ -57,7 +54,7 @@ public class DynMapRenderer extends ToggleableFeature {
         HudRenderCallback.EVENT.register(this::render);
     }
     MinecraftClient client = MinecraftClient.getInstance();
-    public void render(MatrixStack matrixStack,float tickDelta)
+    public void render(DrawContext context, float tickDelta)
     {
         var profiler = client.getProfiler();
         profiler.push("minimap");
@@ -106,18 +103,19 @@ public class DynMapRenderer extends ToggleableFeature {
             profiler.pop();
 
             profiler.push("sides");
-                renderSides(matrixStack,top,left,width,height-1);
+                renderSides(context,top,left,width,height-1);
             profiler.pop();
 
             profiler.push("main_render");
-            beginScissor(left-1,top,right-1,down+1);
+
+            context.enableScissor(left-1,top,right-1,down+1);
             for(int x=-1;x<sqrRadius+1;x++)
             {
                 for(int y=-1;y<sqrRadius+2;y++) {
                     profiler.push("request");
 
                         profiler.push("prepare");
-                            TextureRequest req = TextureRequest.WorldSpaceTextureRequest(ip,world,zoom,(int)playerPos.x,(int)playerPos.z,x-sqrRadius/2,y-sqrRadius/2);
+                            TextureRequest req = TextureRequest.worldSpaceTextureRequest(ip,world,zoom,(int)playerPos.x,(int)playerPos.z,x-sqrRadius/2,y-sqrRadius/2);
                         profiler.pop();
 
                         profiler.push("getTexture");
@@ -128,10 +126,7 @@ public class DynMapRenderer extends ToggleableFeature {
                     profiler.pop();
 
                     profiler.push("draw");
-                    RenderSystem.setShaderTexture(0,texture);
-
-                    DrawableHelper.drawTexture(
-                            matrixStack,
+                    context.drawTexture(texture,
                             (int)((x*cellsize*fscale +left-playerx*fscale)*(cellsizeConst)),
                             (int)((y*cellsize*fscale +top-playery*fscale)*(cellsizeConst)),
                             0,0,
@@ -161,14 +156,14 @@ public class DynMapRenderer extends ToggleableFeature {
                     ang *= 0.0174533;
                     var finX = x * cos(ang) - y * sin(ang);
                     var finY = x * sin(ang) + y * cos(ang);
-                    DrawableHelper.fill(matrixStack,
+                    context.fill(
                             (int)((left+width/2-1+finX)),
                             (int)((top+height/2+finY)),
                             (int)((left+width/2+1+finX)),
                             (int)((top+height/2+2+finY)),
                             ColorHelper.Argb.getArgb(255,255,128,128));
                 }
-                DrawableHelper.fill(matrixStack,
+                context.fill(
                         (int)((left+width/2-1)),
                         (int)((top+height/2)),
                         (int)((left+width/2+1)),
@@ -192,8 +187,8 @@ public class DynMapRenderer extends ToggleableFeature {
                         profiler.pop();
                         continue;
                     }
-                    matrixStack.push();
-                    matrixStack.scale((float) textScale,(float) textScale,(float) textScale);
+                    context.getMatrices().push();
+                    context.getMatrices().scale((float) textScale,(float) textScale,(float) textScale);
 
                     var pos = waypoint.getPosInDimension(currentDimension);
                     var coords = new Vec3d(pos.x,0,pos.y).subtract(playerPos);
@@ -218,8 +213,8 @@ public class DynMapRenderer extends ToggleableFeature {
 
                     profiler.pop();
                     profiler.push("render");
-                    waypoint.RenderWaypointOnScreen(matrixStack,centerX,centerY);
-                    matrixStack.pop();
+                    waypoint.RenderWaypointOnScreen(context,centerX,centerY);
+                    context.getMatrices().pop();
                     profiler.pop();
                 }
                 profiler.pop();
@@ -228,25 +223,12 @@ public class DynMapRenderer extends ToggleableFeature {
         }
         profiler.pop();
     }
-    public void renderSides(MatrixStack matrices,int x,int y,int width,int height)
+    public void renderSides(DrawContext context,int x,int y,int width,int height)
     {
         y-=1;
         height+=1;
-        DrawableHelper.fill(matrices, x-3, y-3, x + width+3, y + height+3, 0xFF000000);
-        //DrawableHelper.fill(matrices, x-2, y-2, x + width+2, y + height+2, 0xFFC6C6C6);
-        //DrawableHelper.fill(matrices, x-6, y-6, x + width+4, y + height+4, 0xFFFFFFFF);
-        DrawableHelper.fill(matrices, x-2, y-2, x + width+2, y + height+2, 0xFFFFFFFF);
-        //DrawableHelper.fill(matrices, x-4, y-4, x + width+4, y + height+4, 0xFFC6C6C6);
-    }
-    public void beginScissor(double x, double y, double endX, double endY)
-    {
-        double width = endX - x;
-        double height = endY - y;
-        width = Math.max(0, width);
-        height = Math.max(0, height);
-        float d = (float) client.getWindow().getScaleFactor();
-        int ay = (int) (( client.getWindow().getScaledHeight() - (y + height)) * d);
-        RenderSystem.enableScissor((int) (x * d), ay, (int) (width * d), (int) (height * d));
+        context.fill(x-3, y-3, x + width+3, y + height+3, 0xFF000000);
+        context.fill(x-2, y-2, x + width+2, y + height+2, 0xFFFFFFFF);
     }
 
 

@@ -1,6 +1,6 @@
-package io.github.javajump3r.jjdynmap.dynmap.waypoints;
+package io.github.JumperOnJava.jjdynmap.dynmap.waypoints;
 
-import io.github.javajump3r.jjdynmap.dynmap.DynMapHelper;
+import io.github.JumperOnJava.jjdynmap.dynmap.DynMapHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
