@@ -27,7 +27,7 @@ public class DynMapHelper {
     public static NativeImage toNativeImage(File file){
         try {
             InputStream inputStream = new FileInputStream(file);
-                NativeImage nativeImage = NativeImage.read(inputStream);
+            NativeImage nativeImage = NativeImage.read(inputStream);
             inputStream.close();
             return nativeImage;
         }
